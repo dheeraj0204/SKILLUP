@@ -84,6 +84,8 @@ function StudentOverview() {
   const [heights, setHeights] = useState(Array(12).fill(0));
   const [progress, setProgress] = useState(0);
   const [lessons, setLessons] = useState(0);
+  const [matchPercent, setMatchPercent] = useState(0);
+  const [showWelcome, setShowWelcome] = useState(false);
 
   useEffect(() => {
     setSaved(JSON.parse(localStorage.getItem("skillsync-saved") || "[]"));
@@ -102,9 +104,24 @@ function StudentOverview() {
       const easeRatio = 1 - Math.pow(1 - progressRatio, 3); // ease out cubic
       setProgress(Math.round(68 * easeRatio));
       setLessons(Math.round(8 * easeRatio));
+      setMatchPercent(Math.round(82 * easeRatio));
       if (progressRatio < 1) requestAnimationFrame(animateNumbers);
     };
     requestAnimationFrame(animateNumbers);
+
+    // Welcome sound on mount
+    const hasWelcomed = sessionStorage.getItem("welcomed_maya");
+    if (!hasWelcomed) {
+      if ('speechSynthesis' in window) {
+        setTimeout(() => {
+          const msg = new SpeechSynthesisUtterance("Welcome Maya! Login successful.");
+          window.speechSynthesis.speak(msg);
+        }, 500);
+      }
+      setShowWelcome(true);
+      sessionStorage.setItem("welcomed_maya", "true");
+      setTimeout(() => setShowWelcome(false), 5000);
+    }
 
     return () => clearTimeout(timeout);
   }, []);
@@ -121,23 +138,28 @@ function StudentOverview() {
 
   return (
     <>
+      {showWelcome && (
+        <div className="mb-6 rounded-3xl border border-lime-300/30 bg-lime-300/10 p-4 text-center animate-in fade-in zoom-in duration-700">
+          <h2 className="text-2xl font-bold text-lime-200 animate-pulse">🎉 WELCOME MAYA! 🎉</h2>
+          <p className="text-sm text-lime-100/70">Login successful</p>
+        </div>
+      )}
       <div className="grid gap-4 lg:grid-cols-[1.35fr_.65fr]">
         <div className="rounded-3xl border border-lime-200/15 bg-gradient-to-br from-lime-300/[0.12] via-white/[0.045] to-violet-500/[0.1] p-6 sm:p-8">
           <div className="flex items-start justify-between gap-5">
-            <div>
+            <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000 fill-mode-both">
               <p className="text-xs uppercase tracking-[.2em] text-lime-200/70">
                 Your next best move
               </p>
-              <h2 className="mt-4 max-w-lg text-3xl font-semibold tracking-[-.05em] sm:text-4xl">
-                Complete your accessibility skill gap.
+              <h2 className="mt-4 max-w-lg text-3xl font-semibold tracking-[-.05em] sm:text-4xl text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70">
+                Your next opportunity is closer than you think.
               </h2>
               <p className="mt-4 max-w-md text-sm leading-6 text-white/55">
-                You are already a strong match for product teams. One focused
-                project could unlock 6 more opportunities.
+                Complete your accessibility skill gap. You are already a strong match for product teams. One focused project could unlock 6 more opportunities.
               </p>
             </div>
-            <div className="hidden size-16 items-center justify-center rounded-2xl border border-lime-200/20 bg-lime-300/10 text-2xl text-lime-100 sm:flex">
-              82%
+            <div className="hidden size-16 items-center justify-center rounded-2xl border border-lime-200/20 bg-lime-300/10 text-2xl font-bold text-lime-100 sm:flex transition-all duration-700">
+              {matchPercent}%
             </div>
           </div>
           <div className="mt-8 flex flex-wrap gap-3">

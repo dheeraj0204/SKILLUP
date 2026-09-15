@@ -14,6 +14,7 @@ import {
   Users,
 } from "lucide-react";
 import { AppButton, AppShell } from "@/components/skillsync/shell";
+import Plasma from "@/components/plasma";
 import {
   courses,
   messages,
@@ -24,6 +25,139 @@ import {
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { DashboardPage } from "@/components/skillsync/dashboard";
+
+import Plasma from "@/components/plasma";
+import {
+  Upload,
+} from "lucide-react";
+
+function OpportunityDetail({ id }: { id?: string }) {
+  const opp = opportunities.find((o) => o.id === id) || opportunities[0];
+  const [isApplying, setIsApplying] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
+  const [applied, setApplied] = useState(false);
+
+  if (applied) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md">
+        <div className="absolute inset-0 z-0 opacity-60">
+          <Plasma color="#a3e635" speed={0.8} />
+        </div>
+        <div className="relative z-10 text-center animate-in fade-in zoom-in duration-700">
+          <div className="mx-auto flex size-24 items-center justify-center rounded-full bg-lime-300 shadow-[0_0_80px_rgba(214,255,87,0.5)]">
+            <CheckCircle2 className="size-12 text-black" />
+          </div>
+          <h2 className="mt-8 text-4xl font-bold text-white drop-shadow-lg">
+            Applied Successfully!
+          </h2>
+          <p className="mt-4 text-lg text-white/90 drop-shadow-md">
+            Your application for {opp.title} is on its way.
+          </p>
+          <AppButton className="mt-10 px-8" asChild>
+            <Link href="/applications">View My Applications</Link>
+          </AppButton>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-8 rounded-3xl border border-white/10 bg-white/[0.035] p-6 lg:p-10">
+      <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
+        <div className="flex-1">
+          <div className="flex items-center gap-4">
+            <div className="flex size-16 items-center justify-center rounded-2xl bg-white/[0.07]">
+              <BriefcaseBusiness className="size-8 text-white/70" />
+            </div>
+            <div>
+              <h2 className="text-3xl font-bold text-white">{opp.title}</h2>
+              <p className="mt-1 text-lg text-white/60">{opp.company}</p>
+            </div>
+          </div>
+          <div className="mt-8 flex flex-wrap gap-6 text-sm text-white/50">
+            <span className="flex items-center gap-2">
+              <MapPin className="size-5" /> {opp.location}
+            </span>
+            <span className="flex items-center gap-2 font-medium text-lime-200">
+              <CheckCircle2 className="size-5" /> {opp.match}% Match
+            </span>
+          </div>
+          <div className="mt-8 flex flex-wrap gap-2">
+            {opp.skills.map((s) => (
+              <span
+                key={s}
+                className="rounded-full bg-white/10 px-4 py-1.5 text-sm"
+              >
+                {s}
+              </span>
+            ))}
+          </div>
+          <p className="mt-10 leading-relaxed text-white/60">
+            We are looking for a highly motivated {opp.title} to join our team at {opp.company}. The ideal candidate is passionate about building products that users love, has a deep understanding of human-centered design, and can collaborate seamlessly with engineering and marketing teams.
+          </p>
+        </div>
+        <div className="min-w-[320px] shrink-0 rounded-3xl border border-lime-300/20 bg-lime-300/[0.03] p-8 shadow-2xl">
+          {!isApplying ? (
+            <div className="text-center">
+              <h3 className="text-xl font-medium">Ready for your next move?</h3>
+              <p className="mt-3 text-sm text-white/50">
+                You're a strong match. Apply now to stand out to the hiring team.
+              </p>
+              <AppButton
+                className="mt-8 w-full py-6 text-base"
+                onClick={() => setIsApplying(true)}
+              >
+                View and Apply
+              </AppButton>
+            </div>
+          ) : (
+            <div className="animate-in fade-in slide-in-from-bottom-4">
+              <h3 className="text-lg font-medium text-white">
+                Upload your Resume
+              </h3>
+              <p className="mt-1 text-sm text-white/50">PDF format up to 5MB</p>
+
+              <label className="mt-6 flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-white/20 bg-white/5 py-10 transition hover:bg-white/10 hover:border-white/30">
+                <Upload className="size-8 text-white/40" />
+                <span className="mt-4 font-medium text-white/70">
+                  Select file to upload
+                </span>
+                <input
+                  type="file"
+                  accept=".pdf"
+                  className="hidden"
+                  onChange={(e) => e.target.files && setFile(e.target.files[0])}
+                />
+              </label>
+
+              {file && (
+                <div className="mt-4 flex items-center gap-3 rounded-xl bg-violet-500/20 p-4 text-sm text-violet-200">
+                  <CheckCircle2 className="size-5 shrink-0 text-violet-300" />
+                  <span className="truncate">{file.name}</span>
+                </div>
+              )}
+
+              <AppButton
+                className={`mt-8 w-full py-6 text-base ${
+                  !file ? "pointer-events-none opacity-50" : ""
+                }`}
+                onClick={() => setApplied(true)}
+              >
+                Submit Application
+              </AppButton>
+              <button
+                onClick={() => setIsApplying(false)}
+                className="mt-4 w-full py-2 text-sm text-white/40 hover:text-white"
+              >
+                Cancel
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function CircularProgress({
   percentage,
@@ -165,6 +299,17 @@ export default function CatchAllPage() {
             <Plus data-icon="inline-start" /> Add new
           </AppButton>
         </div>
+        {key === "settings" && (
+          <div className="mt-8 rounded-3xl border border-white/10 bg-white/[0.035] p-6 lg:p-10">
+            <h2 className="font-medium text-white/50">
+              Settings content placeholder
+            </h2>
+          </div>
+        )}
+        
+        {key === "opportunities" && (
+          <OpportunityDetail id={params.slug?.[1]} />
+        )}
         {key === "applications" && (
           <div className="mt-8 rounded-3xl border border-white/10 bg-white/[0.035] p-5 sm:p-7">
             <div className="flex items-center justify-between">
@@ -247,7 +392,8 @@ export default function CatchAllPage() {
               </div>
               <p className="mt-20 text-sm leading-6 text-white/40">
                 You are making steady progress across{" "}
-                <span className="text-white/80">3 learning paths</span>. Keep the momentum going!
+                <span className="text-white/80">3 learning paths</span>. Keep
+                the momentum going!
               </p>
             </div>
           </div>
