@@ -42,6 +42,22 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember] = useState(true);
   const [error, setError] = useState("");
+  const [splash, setSplash] = useState(true);
+  const [animatingOut, setAnimatingOut] = useState(false);
+
+  useEffect(() => {
+    const hasSplashed = sessionStorage.getItem("hasSplashed");
+    if (hasSplashed) {
+      setSplash(false);
+    } else {
+      const timer1 = setTimeout(() => setAnimatingOut(true), 2000);
+      const timer2 = setTimeout(() => {
+        setSplash(false);
+        sessionStorage.setItem("hasSplashed", "true");
+      }, 2800);
+      return () => { clearTimeout(timer1); clearTimeout(timer2); };
+    }
+  }, []);
 
   useEffect(() => {
     if (window.localStorage.getItem("skillsync-session"))
@@ -75,8 +91,16 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-transparent px-5 py-8 text-white">
-      <div className="pointer-events-none absolute -left-24 top-12 size-72 animate-pulse rounded-full bg-violet-500/20 blur-3xl" />
+    <>
+      {splash && (
+        <div className={`fixed inset-0 z-50 flex items-center justify-center bg-[#08070d] transition-all duration-1000 ease-in-out ${animatingOut ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100'}`}>
+           <div className={`transition-all duration-1000 ease-in-out ${animatingOut ? '-translate-x-20' : 'translate-x-0'}`}>
+             <SkillSyncMark splash={true} />
+           </div>
+        </div>
+      )}
+      <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-transparent px-5 py-8 text-white">
+        <div className="pointer-events-none absolute -left-24 top-12 size-72 animate-pulse rounded-full bg-violet-500/20 blur-3xl" />
       <div className="pointer-events-none absolute -right-24 bottom-0 size-96 rounded-full bg-lime-300/10 blur-3xl" />
       <div className="relative grid w-full max-w-5xl overflow-hidden rounded-[2rem] border border-white/10 bg-black/40 shadow-2xl shadow-black/40 backdrop-blur-xl lg:grid-cols-[.9fr_1.1fr]">
         <section className="hidden flex-col justify-between border-r border-white/10 bg-gradient-to-br from-violet-500/20 via-transparent to-lime-300/10 p-10 lg:flex">
@@ -253,6 +277,7 @@ export default function LoginPage() {
           </p>
         </section>
       </div>
-    </main>
+      </main>
+    </>
   );
 }

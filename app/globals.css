@@ -287,3 +287,5 @@ a[href*="v0.dev"] *,
 
 .light { filter: invert(1) hue-rotate(180deg); background-color: #08070d; }
 .light img, .light video, .light canvas { filter: invert(1) hue-rotate(180deg); }
+
+@keyframes ss-float { 0%, 100% { transform: translateY(0) rotateX(0) rotateY(0); } 50% { transform: translateY(-6px) rotateX(4deg) rotateY(-6deg); } }

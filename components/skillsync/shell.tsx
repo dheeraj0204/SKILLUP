@@ -27,8 +27,51 @@ import { useEffect, useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { demoNotice, navItems, readRole, roleLabels, type Role, saveRole, appTitle, profile, opportunities, courses } from "@/lib/skillsync/data"
 
-export function SkillSyncMark({ compact = false }: { compact?: boolean }) {
-  return <Link href="/" className="inline-flex items-center gap-2.5" aria-label="SkillSync home"><span className="flex size-8 items-center justify-center rounded-xl bg-lime-300 text-black shadow-[0_0_30px_rgba(214,255,87,.18)]"><Sparkles className="size-4" /></span>{!compact && <span className="text-sm font-semibold tracking-tight text-white">Skill<span className="text-lime-200">Sync</span></span>}</Link>
+export function SkillSyncMark({ compact = false, splash = false, className = "" }: { compact?: boolean, splash?: boolean, className?: string }) {
+  const iconRef = useRef<HTMLDivElement>(null);
+  
+  const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!iconRef.current) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    iconRef.current.style.transform = `rotateX(${ -y * 30 }deg) rotateY(${ x * 30 }deg)`;
+  };
+
+  const handleMouseLeave = () => {
+    if (iconRef.current) iconRef.current.style.transform = '';
+  };
+
+  return (
+    <Link 
+      href="/" 
+      className={`inline-flex items-center gap-[14px] px-2 py-1.5 select-none [perspective:700px] ${className}`} 
+      onMouseMove={handleMouseMove} 
+      onMouseLeave={handleMouseLeave}
+      aria-label="SkillSync home"
+    >
+      <div 
+        ref={iconRef} 
+        className={`relative [transform-style:preserve-3d] [transform:rotateX(0deg)_rotateY(0deg)] transition-transform duration-150 ease-out animate-[ss-float_3.4s_ease-in-out_infinite] ${splash ? 'w-24 h-24' : compact ? 'w-8 h-8' : 'w-[52px] h-[52px]'}`}
+      >
+        <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_32%_28%,_#d4ff6b_0%,_#a6e22e_45%,_#6f9c1a_100%)] [transform:translateZ(0px)]"></div>
+        <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_32%_28%,_#d4ff6b_0%,_#a6e22e_45%,_#6f9c1a_100%)] [transform:translateZ(-3px)] brightness-[0.92]"></div>
+        <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_32%_28%,_#d4ff6b_0%,_#a6e22e_45%,_#6f9c1a_100%)] [transform:translateZ(-6px)] brightness-[0.82]"></div>
+        <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_32%_28%,_#d4ff6b_0%,_#a6e22e_45%,_#6f9c1a_100%)] [transform:translateZ(-9px)] brightness-[0.7]"></div>
+        <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_32%_28%,_#d4ff6b_0%,_#a6e22e_45%,_#6f9c1a_100%)] [transform:translateZ(-12px)] brightness-[0.55] shadow-[0_14px_24px_rgba(0,0,0,0.45)]"></div>
+        <div className="absolute inset-0 flex items-center justify-center [transform:translateZ(4px)]">
+          <svg viewBox="0 0 24 24" fill="#12140f" className={`${splash ? 'w-12 h-12' : compact ? 'w-4 h-4' : 'w-[26px] h-[26px]'} drop-shadow-[0_2px_2px_rgba(0,0,0,0.35)]`} xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2 L14.2 9.8 L22 12 L14.2 14.2 L12 22 L9.8 14.2 L2 12 L9.8 9.8 Z"/>
+          </svg>
+        </div>
+      </div>
+      {!compact && (
+        <div className={`${splash ? 'text-6xl' : 'text-[28px]'} font-bold tracking-[-0.01em] [transform-style:preserve-3d]`}>
+          <span className="text-[#f5f6f5]">Skill</span><span className="text-[#a6e22e] [text-shadow:0_1px_0_#6f9c1a,_0_2px_6px_rgba(166,226,46,0.35)]">Sync</span>
+        </div>
+      )}
+    </Link>
+  )
 }
 
 const roleLinks: Record<Role, string> = { student: "/student/dashboard", industry: "/industry/dashboard", faculty: "/faculty/dashboard", institution: "/institution/dashboard", admin: "/admin/dashboard" }
