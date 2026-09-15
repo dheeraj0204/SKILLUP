@@ -23,7 +23,7 @@ import {
 } from "lucide-react"
 import { useTheme } from "next-themes"
 import type React from "react"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { demoNotice, navItems, readRole, roleLabels, type Role, saveRole, appTitle, profile, opportunities, courses } from "@/lib/skillsync/data"
 

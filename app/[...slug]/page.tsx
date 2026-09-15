@@ -12,6 +12,9 @@ import {
   Search,
   Sparkles,
   Users,
+  MapPin,
+  BriefcaseBusiness,
+  Upload,
 } from "lucide-react";
 import { AppButton, AppShell } from "@/components/skillsync/shell";
 import Plasma from "@/components/plasma";
@@ -21,15 +24,11 @@ import {
   skillBars,
   skillsGap,
   applicationStages,
+  opportunities,
 } from "@/lib/skillsync/data";
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { DashboardPage } from "@/components/skillsync/dashboard";
-
-import Plasma from "@/components/plasma";
-import {
-  Upload,
-} from "lucide-react";
 
 function OpportunityDetail({ id }: { id?: string }) {
   const opp = opportunities.find((o) => o.id === id) || opportunities[0];
