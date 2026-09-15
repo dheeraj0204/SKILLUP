@@ -284,3 +284,6 @@ a[href*="v0.dev"] *,
   pointer-events: none !important;
   opacity: 0 !important;
 }
+
+.light { filter: invert(1) hue-rotate(180deg); background-color: #08070d; }
+.light img, .light video, .light canvas { filter: invert(1) hue-rotate(180deg); }

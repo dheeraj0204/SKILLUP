@@ -204,21 +204,40 @@ export default function LoginPage() {
             <span className="h-px flex-1 bg-white/10" />
           </div>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-            {roles.map((item) => (
-              <button
-                key={item}
-                type="button"
-                onClick={() => setRole(item)}
-                className={`rounded-xl border px-3 py-3 text-left transition ${role === item ? "border-lime-200/40 bg-lime-300/10 text-lime-100" : "border-white/10 bg-white/[0.03] text-white/50 hover:bg-white/[0.07]"}`}
-              >
-                <span className="block text-xs font-medium">
-                  {roleLabels[item]}
-                </span>
-                <span className="mt-1 block text-[10px] leading-4 text-white/35">
-                  {roleDescriptions[item]}
-                </span>
-              </button>
-            ))}
+            {roles.map((item) => {
+              const roleEmails: Record<Role, string> = {
+                student: "maya@skillsync.demo",
+                industry: "industry@skillsync.demo",
+                faculty: "faculty@skillsync.demo",
+                institution: "admin@university.demo",
+                admin: "admin@skillsync.demo",
+              };
+              const handleRoleSelect = (selectedRole: Role) => {
+                setRole(selectedRole);
+                setEmail(roleEmails[selectedRole]);
+                setPassword(selectedRole + "123");
+              };
+              return (
+                <div key={item} className="group relative">
+                  <button
+                    type="button"
+                    onClick={() => handleRoleSelect(item)}
+                    className={`w-full rounded-xl border px-3 py-3 text-left transition ${role === item ? "border-lime-200/40 bg-lime-300/10 text-lime-100" : "border-white/10 bg-white/[0.03] text-white/50 hover:bg-white/[0.07]"}`}
+                  >
+                    <span className="block text-xs font-medium">
+                      {roleLabels[item]}
+                    </span>
+                    <span className="mt-1 block text-[10px] leading-4 text-white/35">
+                      {roleDescriptions[item]}
+                    </span>
+                  </button>
+                  <div className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-max max-w-[200px] -translate-x-1/2 -translate-y-1 whitespace-normal rounded-lg bg-lime-300/20 backdrop-blur-md border border-lime-300/20 px-3 py-2 text-center text-xs text-white opacity-0 shadow-xl transition-all duration-300 group-hover:-translate-y-2 group-hover:opacity-100">
+                    <span className="font-semibold text-lime-100">{roleLabels[item]}</span>
+                    <p className="mt-1 text-[10px] text-white/80">Click to auto-fill:<br/>{roleEmails[item]}</p>
+                  </div>
+                </div>
+              );
+            })}
           </div>
           <p className="mt-6 text-center text-xs text-white/35">
             Don&apos;t have an account?{" "}

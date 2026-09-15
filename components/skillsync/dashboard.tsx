@@ -15,6 +15,7 @@ import {
   Sparkles,
   Users,
   Zap,
+  Volume2,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AppButton, AppShell } from "@/components/skillsync/shell";
@@ -223,18 +224,33 @@ function StudentOverview() {
                   </div>
                 </div>
                 <div className="flex items-center justify-between gap-3 sm:flex-col sm:items-end">
-                  <button
-                    onClick={() => toggle(opportunity.id)}
-                    className={`rounded-lg p-2 ${saved.includes(opportunity.id) ? "text-lime-200" : "text-white/30 hover:text-white"}`}
-                    aria-label="Save opportunity"
-                  >
-                    <Bookmark
-                      className="size-4"
-                      fill={
-                        saved.includes(opportunity.id) ? "currentColor" : "none"
-                      }
-                    />
-                  </button>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => {
+                        if ('speechSynthesis' in window) {
+                          window.speechSynthesis.cancel();
+                          const msg = new SpeechSynthesisUtterance(`Role: ${opportunity.title} at ${opportunity.company}. Match score: ${opportunity.match}%. Skills needed: ${opportunity.skills.join(", ")}`);
+                          window.speechSynthesis.speak(msg);
+                        }
+                      }}
+                      className="rounded-lg p-2 text-white/30 hover:text-white"
+                      title="Read aloud"
+                    >
+                      <Volume2 className="size-4" />
+                    </button>
+                    <button
+                      onClick={() => toggle(opportunity.id)}
+                      className={`rounded-lg p-2 ${saved.includes(opportunity.id) ? "text-lime-200" : "text-white/30 hover:text-white"}`}
+                      aria-label="Save opportunity"
+                    >
+                      <Bookmark
+                        className="size-4"
+                        fill={
+                          saved.includes(opportunity.id) ? "currentColor" : "none"
+                        }
+                      />
+                    </button>
+                  </div>
                   <Link
                     href={`/opportunities/${opportunity.id}`}
                     className="text-xs text-white/50 hover:text-white"

@@ -25,21 +25,30 @@ import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { DashboardPage } from "@/components/skillsync/dashboard";
 
-function CircularProgress({ percentage, colorClass }: { percentage: number, colorClass: string }) {
+function CircularProgress({
+  percentage,
+  colorClass,
+}: {
+  percentage: number;
+  colorClass: string;
+}) {
   const [val, setVal] = useState(0);
   useEffect(() => {
     let startTimestamp: number;
     const duration = 1500;
     const animate = (timestamp: number) => {
       if (!startTimestamp) startTimestamp = timestamp;
-      const progressRatio = Math.min((timestamp - startTimestamp) / duration, 1);
+      const progressRatio = Math.min(
+        (timestamp - startTimestamp) / duration,
+        1,
+      );
       const easeRatio = 1 - Math.pow(1 - progressRatio, 3);
       setVal(Math.round(percentage * easeRatio));
       if (progressRatio < 1) requestAnimationFrame(animate);
     };
     requestAnimationFrame(animate);
   }, [percentage]);
-  
+
   const radius = 24;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (val / 100) * circumference;
@@ -48,32 +57,56 @@ function CircularProgress({ percentage, colorClass }: { percentage: number, colo
     <div className="relative flex items-center justify-center size-16">
       <svg className="size-full -rotate-90 transform" viewBox="0 0 64 64">
         {/* Background circle */}
-        <circle cx="32" cy="32" r={radius} className="fill-none stroke-white/10" strokeWidth="6" />
+        <circle
+          cx="32"
+          cy="32"
+          r={radius}
+          className="fill-none stroke-white/10"
+          strokeWidth="6"
+        />
         {/* Progress circle */}
-        <circle 
-          cx="32" cy="32" r={radius} 
-          className={`fill-none ${colorClass}`} 
-          strokeWidth="6" 
-          strokeDasharray={circumference} 
-          strokeDashoffset={strokeDashoffset} 
-          strokeLinecap="round" 
-          style={{ filter: 'drop-shadow(0 0 8px currentColor)', transition: 'stroke-dashoffset 0.1s linear' }}
+        <circle
+          cx="32"
+          cy="32"
+          r={radius}
+          className={`fill-none ${colorClass}`}
+          strokeWidth="6"
+          strokeDasharray={circumference}
+          strokeDashoffset={strokeDashoffset}
+          strokeLinecap="round"
+          style={{
+            filter: "drop-shadow(0 0 8px currentColor)",
+            transition: "stroke-dashoffset 0.1s linear",
+          }}
         />
       </svg>
       <div className="absolute flex flex-col items-center">
-        <span className="text-[13px] font-bold text-white shadow-black drop-shadow-md">{val}%</span>
+        <span className="text-[13px] font-bold text-white shadow-black drop-shadow-md">
+          {val}%
+        </span>
       </div>
     </div>
   );
 }
 
-function AnimatedBar({ width, colorClass }: { width: number, colorClass: string }) {
+function AnimatedBar({
+  width,
+  colorClass,
+}: {
+  width: number;
+  colorClass: string;
+}) {
   const [w, setW] = useState(0);
   useEffect(() => {
     const t = setTimeout(() => setW(width), 100);
     return () => clearTimeout(t);
   }, [width]);
-  return <div className={`h-full rounded-full transition-all duration-1000 ease-out ${colorClass}`} style={{ width: `${w}%` }} />;
+  return (
+    <div
+      className={`h-full rounded-full transition-all duration-1000 ease-out ${colorClass}`}
+      style={{ width: `${w}%` }}
+    />
+  );
 }
 
 const titles: Record<string, [string, string]> = {
@@ -156,39 +189,67 @@ export default function CatchAllPage() {
           </div>
         )}
         {key === "learning" && (
-          <div className="mt-8 grid gap-4 lg:grid-cols-3">
-            {courses.map((course) => (
-              <article
-                key={course.id}
-                className="rounded-3xl border border-white/10 bg-white/[0.035] p-5"
-              >
-                <div className="flex size-11 items-center justify-center rounded-2xl bg-violet-300/10 text-violet-200">
-                  <GraduationCap className="size-5" />
-                </div>
-                <h2 className="mt-7 font-medium">{course.title}</h2>
-                <p className="mt-2 text-xs text-white/40">
-                  {course.provider} · {course.level}
-                </p>
-                <div className="mt-6 flex items-center justify-between">
-                  <CircularProgress percentage={course.progress} colorClass={course.color === 'lime' ? 'stroke-lime-300 text-lime-300' : course.color === 'orange' ? 'stroke-orange-400 text-orange-400' : 'stroke-violet-300 text-violet-300'} />
-                  <span className="text-xs text-white/35">{course.lessons} lessons</span>
-                </div>
-                {course.url ? (
-                  <a
-                    href={course.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-6 flex w-full items-center justify-center rounded-xl border border-white/10 py-2.5 text-sm text-white/65 hover:bg-white/10"
-                  >
-                    {course.progress ? "Continue course" : "Start course"}
-                  </a>
-                ) : (
-                  <button className="mt-6 w-full rounded-xl border border-white/10 py-2.5 text-sm text-white/65 hover:bg-white/10">
-                    {course.progress ? "Continue course" : "Start course"}
-                  </button>
-                )}
-              </article>
-            ))}
+          <div className="mt-8 grid gap-4 lg:grid-cols-[1fr_320px]">
+            <div className="grid gap-4 sm:grid-cols-2">
+              {courses.map((course) => (
+                <article
+                  key={course.id}
+                  className="rounded-3xl border border-white/10 bg-white/[0.035] p-5"
+                >
+                  <div className="flex size-11 items-center justify-center rounded-2xl bg-violet-300/10 text-violet-200">
+                    <GraduationCap className="size-5" />
+                  </div>
+                  <h2 className="mt-7 font-medium">{course.title}</h2>
+                  <p className="mt-2 text-xs text-white/40">
+                    {course.provider} · {course.level}
+                  </p>
+                  <div className="mt-6 flex items-center justify-between">
+                    <CircularProgress
+                      percentage={course.progress}
+                      colorClass={
+                        course.color === "lime"
+                          ? "stroke-lime-300 text-lime-300"
+                          : course.color === "orange"
+                            ? "stroke-orange-400 text-orange-400"
+                            : "stroke-violet-300 text-violet-300"
+                      }
+                    />
+                    <span className="text-xs text-white/35">
+                      {course.lessons} lessons
+                    </span>
+                  </div>
+                  {course.url ? (
+                    <a
+                      href={course.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-6 flex w-full items-center justify-center rounded-xl border border-white/10 py-2.5 text-sm text-white/65 hover:bg-white/10"
+                    >
+                      {course.progress ? "Continue course" : "Start course"}
+                    </a>
+                  ) : (
+                    <button className="mt-6 w-full rounded-xl border border-white/10 py-2.5 text-sm text-white/65 hover:bg-white/10">
+                      {course.progress ? "Continue course" : "Start course"}
+                    </button>
+                  )}
+                </article>
+              ))}
+            </div>
+            <div className="flex flex-col items-center justify-center rounded-3xl border border-white/10 bg-white/[0.035] p-8 text-center lg:sticky lg:top-8 lg:h-[calc(100vh-8rem)]">
+              <h3 className="mb-16 text-lg font-medium text-white/80">
+                Total Progress
+              </h3>
+              <div className="scale-[2.5] transform">
+                <CircularProgress
+                  percentage={31}
+                  colorClass="stroke-sky-400 text-sky-400"
+                />
+              </div>
+              <p className="mt-20 text-sm leading-6 text-white/40">
+                You are making steady progress across{" "}
+                <span className="text-white/80">3 learning paths</span>. Keep the momentum going!
+              </p>
+            </div>
           </div>
         )}
         {key === "messages" && (
@@ -227,7 +288,10 @@ export default function CatchAllPage() {
                       <span className="text-white/40">{skill.value}%</span>
                     </div>
                     <div className="mt-2 h-2 rounded-full bg-white/10">
-                      <AnimatedBar width={skill.value} colorClass={skill.color} />
+                      <AnimatedBar
+                        width={skill.value}
+                        colorClass={skill.color}
+                      />
                     </div>
                   </div>
                 ))}
@@ -246,7 +310,10 @@ export default function CatchAllPage() {
                       <span className="text-lime-200">+{skill.gap} pts</span>
                     </div>
                     <div className="mt-2 h-1.5 rounded-full bg-white/10">
-                      <AnimatedBar width={skill.current} colorClass="bg-lime-300" />
+                      <AnimatedBar
+                        width={skill.current}
+                        colorClass="bg-lime-300"
+                      />
                     </div>
                   </div>
                 ))}

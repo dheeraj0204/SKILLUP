@@ -2,7 +2,26 @@
 
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { Bell, ChevronDown, Command, Home, LogOut, Menu, Search, Sparkles, UserRound, X } from "lucide-react"
+import {
+  Bell,
+  Check,
+  ChevronDown,
+  Command,
+  Home,
+  LayoutDashboard,
+  LogOut,
+  Menu,
+  MessageSquare,
+  Moon,
+  Search,
+  Settings,
+  Sparkles,
+  Sun,
+  User,
+  UserRound,
+  X,
+} from "lucide-react"
+import { useTheme } from "next-themes"
 import type React from "react"
 import { useEffect, useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
@@ -35,7 +54,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <div className="mt-auto flex flex-col gap-1"><Link href="/settings" className="rounded-xl px-3 py-2.5 text-sm text-white/50 hover:bg-white/[0.05] hover:text-white">Settings</Link><Link href="/help" className="rounded-xl px-3 py-2.5 text-sm text-white/50 hover:bg-white/[0.05] hover:text-white">Help center</Link><div className="mt-3 flex items-center gap-3 border-t border-white/8 pt-4"><span className="flex size-9 items-center justify-center rounded-full bg-lime-300/10 text-xs font-semibold text-lime-100">{profile.initials}</span><div className="min-w-0"><p className="truncate text-sm text-white">{profile.name}</p><p className="truncate text-xs text-white/40">{roleLabels[role]}</p></div><button onClick={() => { window.localStorage.removeItem("skillsync-session"); window.sessionStorage.removeItem("skillsync-session"); router.push("/login") }} className="ml-auto text-white/35 hover:text-white" aria-label="Sign out"><LogOut className="size-4" /></button></div></div>
     </aside>
     <div className="lg:pl-64">
-      <header className="sticky top-0 z-20 border-b border-white/8 bg-[#08070d]/75 backdrop-blur-xl"><div className="mx-auto flex h-16 max-w-7xl items-center gap-3 px-5 sm:px-8"><button className="rounded-xl p-2 text-white/60 hover:bg-white/10 lg:hidden" onClick={() => setMobileOpen(!mobileOpen)} aria-label="Open menu">{mobileOpen ? <X /> : <Menu />}</button><div className="lg:hidden"><SkillSyncMark /></div><button onClick={() => setSearchOpen(true)} className="ml-auto flex min-w-0 flex-1 items-center gap-2 rounded-xl border border-white/8 bg-white/[0.04] px-3 py-2 text-left text-sm text-white/35 sm:max-w-sm"><Search className="size-4" /><span className="truncate">Search roles, skills, people...</span><kbd className="ml-auto hidden rounded-md border border-white/10 px-1.5 py-0.5 text-[10px] text-white/30 sm:block">⌘ K</kbd></button><Link href="/notifications" className="relative rounded-xl p-2 text-white/55 hover:bg-white/10" aria-label="Notifications"><Bell className="size-4" /><span className="absolute right-1.5 top-1.5 size-1.5 rounded-full bg-lime-300" /></Link><div className="relative hidden sm:block"><button className="flex items-center gap-2 rounded-xl px-2 py-1.5 text-sm text-white/70 hover:bg-white/10" onClick={() => setProfileOpen((open) => !open)} aria-expanded={profileOpen} aria-haspopup="menu" aria-label="Open profile menu"><span className="flex size-7 items-center justify-center rounded-full bg-lime-300/10 text-xs text-lime-100">{profile.initials}</span><ChevronDown className={`size-3 text-white/40 transition-transform ${profileOpen ? "rotate-180" : ""}`} /></button>{profileOpen && <div className="absolute right-0 top-full mt-2 w-48 rounded-2xl border border-white/10 bg-[#15121f] p-2 shadow-2xl backdrop-blur-xl" role="menu"><div className="border-b border-white/10 px-3 py-2"><p className="text-sm font-medium text-white">{profile.name}</p><p className="text-xs text-white/40">{roleLabels[role]}</p></div><button role="menuitem" onClick={() => { window.localStorage.removeItem("skillsync-session"); window.sessionStorage.removeItem("skillsync-session"); setProfileOpen(false); router.push("/login") }} className="mt-1 flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm text-white/70 hover:bg-white/[0.08] hover:text-white"><LogOut className="size-4" />Log out</button></div>}</div></div></header>
+      <header className="sticky top-0 z-20 border-b border-white/8 bg-[#08070d]/75 backdrop-blur-xl"><div className="mx-auto flex h-16 max-w-7xl items-center gap-3 px-5 sm:px-8"><button className="rounded-xl p-2 text-white/60 hover:bg-white/10 lg:hidden" onClick={() => setMobileOpen(!mobileOpen)} aria-label="Open menu">{mobileOpen ? <X /> : <Menu />}</button><div className="lg:hidden"><SkillSyncMark /></div><button onClick={() => setSearchOpen(true)} className="ml-auto flex min-w-0 flex-1 items-center gap-2 rounded-xl border border-white/8 bg-white/[0.04] px-3 py-2 text-left text-sm text-white/35 sm:max-w-sm"><Search className="size-4" /><span className="truncate">Search roles, skills, people...</span><kbd className="ml-auto hidden rounded-md border border-white/10 px-1.5 py-0.5 text-[10px] text-white/30 sm:block">⌘ K</kbd></button>
+      <button onClick={() => { document.documentElement.classList.toggle("light") }} className="relative rounded-xl p-2 text-white/55 hover:bg-white/10" aria-label="Toggle theme"><Sun className="size-4" /></button>
+      <Link href="/notifications" className="relative rounded-xl p-2 text-white/55 hover:bg-white/10" aria-label="Notifications"><Bell className="size-4" /><span className="absolute right-1.5 top-1.5 size-1.5 rounded-full bg-lime-300" /></Link><div className="relative hidden sm:block"><button className="flex items-center gap-2 rounded-xl px-2 py-1.5 text-sm text-white/70 hover:bg-white/10" onClick={() => setProfileOpen((open) => !open)} aria-expanded={profileOpen} aria-haspopup="menu" aria-label="Open profile menu"><span className="flex size-7 items-center justify-center rounded-full bg-lime-300/10 text-xs text-lime-100">{profile.initials}</span><ChevronDown className={`size-3 text-white/40 transition-transform ${profileOpen ? "rotate-180" : ""}`} /></button>{profileOpen && <div className="absolute right-0 top-full mt-2 w-48 rounded-2xl border border-white/10 bg-[#15121f] p-2 shadow-2xl backdrop-blur-xl" role="menu"><div className="border-b border-white/10 px-3 py-2"><p className="text-sm font-medium text-white">{profile.name}</p><p className="text-xs text-white/40">{roleLabels[role]}</p></div><button role="menuitem" onClick={() => { window.localStorage.removeItem("skillsync-session"); window.sessionStorage.removeItem("skillsync-session"); setProfileOpen(false); router.push("/login") }} className="mt-1 flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm text-white/70 hover:bg-white/[0.08] hover:text-white"><LogOut className="size-4" />Log out</button></div>}</div></div></header>
       {mobileOpen && <div className="fixed inset-0 z-20 bg-[#0b0912] p-6 pt-24 lg:hidden"><div className="flex items-center justify-between"><SkillSyncMark /><button onClick={() => setMobileOpen(false)} aria-label="Close menu"><X /></button></div><nav className="mt-10 flex flex-col gap-2">{navItems.map(([label, href]) => <Link onClick={() => setMobileOpen(false)} key={href} href={href} className="rounded-2xl border border-white/8 bg-white/[0.04] p-4 text-lg">{label}</Link>)}</nav></div>}
       <main>{children}</main>
       <nav className="fixed inset-x-3 bottom-3 z-30 flex items-center justify-around rounded-2xl border border-white/10 bg-[#12101b]/95 p-2 shadow-2xl backdrop-blur-xl lg:hidden" aria-label="Mobile navigation">{navItems.slice(0, 5).map(([label, href, icon]) => <Link key={href} href={href} className={`flex flex-col items-center gap-1 rounded-xl px-3 py-1.5 text-[10px] ${pathname === href ? "text-lime-200" : "text-white/40"}`}><span className="text-base">{icon}</span>{label}</Link>)}</nav>
