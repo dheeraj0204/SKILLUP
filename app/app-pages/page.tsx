@@ -1,0 +1,8 @@
+"use client"
+
+import Link from "next/link"
+import { ArrowUpRight, CheckCircle2, MessageCircle, Sparkles } from "lucide-react"
+import { AppShell, AppButton } from "@/components/skillsync/shell"
+import { courses, messages, notifications, skillBars, opportunities } from "@/lib/skillsync/data"
+
+export default function WorkspacePage() { return <AppShell><div className="mx-auto max-w-7xl px-5 py-8 pb-28 sm:px-8 lg:py-10 lg:pb-10"><p className="text-sm text-lime-200">Workspace</p><h1 className="mt-2 text-4xl font-semibold tracking-[-.05em]">Keep your momentum going.</h1><p className="mt-3 max-w-xl text-sm leading-6 text-white/45">This demo page gives you a quick view across your SkillSync workspace.</p><div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{[{ title:"Applications", value:"4 active", href:"/applications", icon:"↗" },{ title:"Learning", value:"68% complete", href:"/learning", icon:"◒" },{ title:"Messages", value:"2 unread", href:"/messages", icon:"◌" },{ title:"Profile", value:"82% strong", href:"/profile", icon:"◎" },{ title:"Skills", value:"3 next steps", href:"/skills", icon:"✦" },{ title:"Saved", value:"12 opportunities", href:"/saved", icon:"♡" }].map((item) => <Link key={item.title} href={item.href} className="rounded-3xl border border-white/10 bg-white/[0.04] p-5 transition hover:-translate-y-0.5 hover:border-white/20"><div className="flex items-start justify-between"><span className="flex size-10 items-center justify-center rounded-xl bg-lime-300/10 text-lime-200">{item.icon}</span><ArrowUpRight className="size-4 text-white/30" /></div><p className="mt-8 font-medium">{item.title}</p><p className="mt-1 text-sm text-white/40">{item.value}</p></Link>)}</div></div></AppShell> }
